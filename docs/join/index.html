@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Play my games on your TV</title>
+<!-- No scripts or files from anywhere else: the invite after the # never leaves this phone. -->
+<style>
+  :root {
+    --bg: #0e0f14; --card: #181a22; --text: #f2f3f7; --muted: #a6a9b8; --eye: #b9a6ff; --button: #7a5cff; --ok: #6fdc8c;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f5f4f9; --card: #ffffff; --text: #16171d; --muted: #5d6070; --eye: #5b3fd6; --button: #6b4ef0; --ok: #1f8a43; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 480px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 8px; }
+  .lead { color: var(--muted); margin: 0 0 24px; }
+  .step { background: var(--card); border-radius: 18px; padding: 18px; margin: 0 0 14px; }
+  .num {
+    display: inline-flex; width: 26px; height: 26px; border-radius: 13px; background: var(--eye); color: var(--bg);
+    font-weight: 700; font-size: 14px; align-items: center; justify-content: center; margin-right: 10px;
+  }
+  .step h2 { display: flex; align-items: center; font-size: 18px; margin: 0 0 8px; }
+  .step p { color: var(--muted); margin: 0 0 14px; font-size: 15px; }
+  a.button {
+    display: block; text-align: center; text-decoration: none; background: var(--button); color: #fff;
+    font-weight: 600; padding: 14px; border-radius: 14px;
+  }
+  a.alt { display: block; text-align: center; color: var(--eye); margin-top: 12px; font-size: 14px; }
+  .note { color: var(--muted); font-size: 13px; margin-top: 22px; }
+  .missing { border: 1px solid var(--eye); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Play my games on your TV</h1>
+  <p class="lead">TV Setup puts the games on your Google TV or Android TV. You need an Android phone on the same Wi-Fi as the TV.</p>
+
+  <div id="ok">
+    <section class="step">
+      <h2><span class="num">1</span>Get TV Setup</h2>
+      <p>Skip this if you have it. Open the download when it finishes, and allow installing from your browser if your phone asks.</p>
+      <a class="button" href="https://github.com/salvatoreguytano-cmyk/tv-setup/releases/latest/download/TV-Setup.apk">Download TV Setup</a>
+    </section>
+    <section class="step">
+      <h2><span class="num">2</span>Open the invite</h2>
+      <p>Come back to this page and tap below. TV Setup opens with your invite, then asks which TV is yours.</p>
+      <a class="button" id="open" href="#">Open the invite in TV Setup</a>
+      <a class="alt" id="plain" href="#">Didn't open? Try this link</a>
+    </section>
+    <p class="note">The invite works for one TV and runs out after 7 days. It stays on your phone: the part of the link after # is never sent to any website.</p>
+  </div>
+
+  <section class="step missing" id="none" hidden>
+    <h2>This link is missing its invite</h2>
+    <p>Ask for a new invite link and open it on your Android phone.</p>
+  </section>
+</main>
+<script>
+  (function () {
+    var match = /tskey-auth-[A-Za-z0-9_-]{10,}/.exec(decodeURIComponent(location.hash || ""));
+    if (!match) {
+      document.getElementById("ok").hidden = true;
+      document.getElementById("none").hidden = false;
+      return;
+    }
+    var key = match[0];
+    var apk = "https://github.com/salvatoreguytano-cmyk/tv-setup/releases/latest/download/TV-Setup.apk";
+    document.getElementById("open").href = "intent://join?k=" + key +
+      "#Intent;scheme=tvsetup;package=gg.spooked.debloat;S.browser_fallback_url=" + encodeURIComponent(apk) + ";end";
+    document.getElementById("plain").href = "tvsetup://join?k=" + key;
+  })();
+</script>
+</body>
+</html>
